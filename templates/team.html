@@ -1,16 +1,26 @@
 {% extends "base.html" %}
-{% block content %}
-Team page 
 
+{% block content %}
+
+<style>  
+  .card:nth-child(even) {
+    background-color: #dddddd;
+  }
+</style>
+
+
+<h1> Team page </h1> 
 
 <div class="row">
   <div class="leftcolumn">
     {% for user in users %}
     <div class="card">
       <a style="text-decoration: none; color: black;" href="/user/{{user.username}}">
-        <h2>{{user.email}}</h2>
-        <h5>{{user.first_name}}</h5>
-      </a>
+        <center>
+          <h3>{{user.email}}</h2>
+          <h5>{{user.first_name}} {{user.last_name}} </h5>
+        </centre>
+      </a>    
     </div>
     {% endfor %}
   </div>

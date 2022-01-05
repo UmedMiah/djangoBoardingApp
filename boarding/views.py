@@ -107,6 +107,8 @@ def index(request):
 def register(request):
     if request.method == 'POST':
         username = request.POST['uname']
+        firstname = request.POST['firstname']
+        surname = request.POST['surname']
         email = request.POST['mail']
         password = request.POST['psw']
         rpassword = request.POST['rpsw']
@@ -119,8 +121,8 @@ def register(request):
                 messages.info(request, 'Username already used')
                 return redirect('register')
             else:
-                user = User.objects.create_user(username=username, email=email, password=password)
-                user.save();
+                user = User.objects.create_user(username=username,first_name=firstname ,last_name=surname ,email=email, password=password)
+                user.save()
                 return redirect('login')
         else:
             messages.info(request, 'Password not the same')
