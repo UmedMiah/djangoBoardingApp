@@ -26,7 +26,7 @@ SECRET_KEY = '*h^!52bm_mf%gfx1+9$6doai*ndirzq@o%(p=u4rm1l^0kq^r('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://boardingapp.herokuapp.com/','127.0.0.1']
+ALLOWED_HOSTS = ['boardingapp.herokuapp.com','127.0.0.1']
 
 
 # Application definition
