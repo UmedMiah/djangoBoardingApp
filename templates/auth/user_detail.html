@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+{% load filterproduct %}
+
+
+{% block title %}User: {{ object.username }}{% endblock %}
+
+{% block content %}
+<style>
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+  </style>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2>{{ object.username }}</h2>
+
+      {% if object.name %}
+        <p>{{ object.name }}</p>
+      {% endif %}
+
+    </div>
+  </div>
+
+  {% if object == request.user or request.user.is_superuser %}
+
+  <!-- Action buttons -->
+  <h1>{{object.pk}}</h1>
+  <!-- End Action buttons -->
+
+    <table>
+      {% for product in products %}
+        <tr>
+          <th>{{product.name}}</th>
+          <th>{% printAccess product useraccess %}</th>
+          {% if request.user.is_superuser%}
+            <th>
+              <a class="nav-link" href="{% addOrRemove product useraccess object %}">
+                {% printAddRemove product useraccess %}
+              </a>
+            </th>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    <table>
+
+  {% endif %}
+
+</div>
+{% endblock content %}

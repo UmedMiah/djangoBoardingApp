@@ -1,0 +1,66 @@
+[
+    {
+      "model": "boarding.products",
+      "pk": 1,
+      "fields": {
+        "name": "VPN",
+        "description": "ODL and Firewall accounts -> ScrumMaster"
+      }
+    },
+    {
+      "model": "boarding.products",
+      "pk": 2,
+      "fields": {
+        "name": "Github",
+        "description": "Repository -> DevOps"
+      }
+    },
+    {
+        "model": "boarding.products",
+        "pk": 3,
+        "fields": {
+          "name": "Slack",
+          "description": "Development Team Chat -> Scrum Master"
+        }
+    },
+    {
+        "model": "boarding.products",
+        "pk": 4,
+        "fields": {
+          "name": "Grafana",
+          "description": " Visualisation analysis tool -> email invite, DevOps"
+        }
+    },
+    {
+        "model": "boarding.products",
+        "pk": 5,
+        "fields": {
+          "name": "Kibana",
+          "description": " Data visualization dashboard  -> DevOps"
+        }
+    },
+    {
+        "model": "boarding.products",
+        "pk": 6,
+        "fields": {
+          "name": "AWS",
+          "description": " Cloud Provider  -> DevOps"
+        }
+    },
+    {
+        "model": "boarding.products",
+        "pk": 7,
+        "fields": {
+          "name": "Atlassian",
+          "description": "Confluence & Jira (Wiki & scrum board) -> Scrum Master"
+        }
+    },
+    {
+        "model": "boarding.products",
+        "pk": 8,
+        "fields": {
+          "name": "Jenkins",
+          "description": "Continous Integration tool-> DevOps"
+        }
+    }
+  ]

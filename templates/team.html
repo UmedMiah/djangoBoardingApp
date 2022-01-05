@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+Team page 
+
+
+<div class="row">
+  <div class="leftcolumn">
+    {% for user in users %}
+    <div class="card">
+      <a style="text-decoration: none; color: black;" href="/user/{{user.username}}">
+        <h2>{{user.email}}</h2>
+        <h5>{{user.first_name}}</h5>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+{% endblock content %}
