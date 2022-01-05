@@ -1,7 +1,6 @@
 from django.shortcuts import redirect, render
 
 from .models import Products, UserAccess
-from django.http import HttpResponse
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 
@@ -25,19 +24,11 @@ class UserDetailView(UserPassesTestMixin, DetailView):
     def get_context_data(self, **kwargs):          
         context = super().get_context_data(**kwargs)                     
         products = self.products
-        useraccess = self.useraccess
-
-
-        # print(str(self.request.user.pk))
-
-        # print(User.objects.filter(username=self.kwargs['username']))
-
+        # useraccess = self.useraccess
 
         userkey= User.objects.filter(username=self.kwargs['username'])
-        
         filteredAccess = UserAccess.objects.filter(user=userkey[0])
 
-        # useraccess.objects.filter(users = 
         context["products"] = products
         context["useraccess"] = filteredAccess
         return context
@@ -70,37 +61,13 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
 user_update_view = UserUpdateView.as_view()
 
-class UserRedirectView(LoginRequiredMixin, RedirectView):
-
-    permanent = False
-
-    def get_redirect_url(self):
-        return reverse("users:detail", kwargs={"username": self.request.user.username})
-
-
-user_redirect_view = UserRedirectView.as_view()
-
-# class AddAccess(FormView):
-#     # model = UserAccess
-#     # fields = '__all__'
-#     # success_url = reverse_lazy('user')
-#     template_name = 'add_access.html'
-#     form_class = AddRecord
-#     success_url = reverse_lazy('team')
-#     # def get_initial(self):
-#     #     parent = Object.objects.get(id=self.kwargs['obj_id'])
-#     #     return { 'parent': parent, 'created_by': self.request.user }
-
-# add_access = AddAccess.as_view()
-
-class ClientUploadDelete(DeleteView):
+class RemoveAccess(DeleteView):
     model = UserAccess
     success_url = reverse_lazy('team')
-    template_name = 'client_upload_delete.html'
+    template_name = 'remove_access.html'
 
-delete_client_upload = ClientUploadDelete.as_view()
+remove_access = RemoveAccess.as_view()
 
-# Create your views here.
 def index(request):
     return render(request, 'index.html')
 
@@ -152,19 +119,6 @@ def logout(request):
 def team(request):
     users = User.objects.all()
     return render(request, 'team.html', {'users': users})
-    # if request.method == 'POST':
-    #     username = request.POST['uname']
-    #     password = request.POST['psw']
-
-    #     user = auth.authenticate(username=username, password=password)
-    #     if user is not None:
-    #         auth.login(request, user)
-    #         return redirect('/')
-    #     else:
-    #         messages.info(request, 'Invalid login')
-    #         return redirect('login')
-        
-    # return render(request,'team.html')
 
 def addaccess(request, userPK, productPK):
     if not request.user.is_superuser:
@@ -182,5 +136,5 @@ def addaccess(request, userPK, productPK):
         messages.info(request, 'User access added')
         return redirect('team')
     else:
-        return render(request, 'addaccess.html')
+        return render(request, 'add_access.html')
         

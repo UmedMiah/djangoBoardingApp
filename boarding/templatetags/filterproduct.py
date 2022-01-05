@@ -21,6 +21,5 @@ def printAddRemove(product, useraccess):
 
 @register.simple_tag
 def addOrRemove(product, useraccess, user):
-#  reverse('addaccess', kwargs={'userpk': user.pk, 'productpk': product.pk}
     useraccessobject = useraccess.filter(product=product.pk)
     return reverse('remove', kwargs={'pk' : useraccessobject[0].pk}) if checkAccess(product, useraccess) else reverse('addaccess', kwargs={'userPK': user.pk, 'productPK': product.pk})
