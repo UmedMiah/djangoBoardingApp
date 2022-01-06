@@ -18,20 +18,14 @@
       border: 1px solid #ccc;
       box-sizing: border-box;
       }
-      .icon {
-      font-size: 110px;
-      display: flex;
-      justify-content: center;
-      color: #4286f4;
-      }
       button {
-      background-color: #4286f4;
+      background-color: #1e22aa;
       color: white;
       padding: 14px 0;
       margin: 10px 0;
       border: none;
       cursor: grab;
-      width: 48%;
+      width: 45%;
       }
       h1 {
       text-align:center;
@@ -42,7 +36,7 @@
       }
       .formcontainer {
       text-align: center;
-      margin: 24px 50px 12px;
+      margin: 24px 450px 12px;
       }
       .container {
       padding: 16px 0;
@@ -64,11 +58,9 @@
   <body>
     <form method="POST" action="register">
       {% csrf_token %}
-      <h1>SIGN UP</h1>
-      <div class="icon">
-        <i class="fas fa-user-circle"></i>
-      </div>
+      <h1>Sign up</h1>
       <div class="formcontainer">
+      <hr>
       <div class="container">
         <label for="uname"><strong>Username</strong></label>
         <input type="text" placeholder="Enter Username" name="uname" required>
@@ -84,12 +76,6 @@
         <input type="password" placeholder="Repeat Password" name="rpsw" required>
       </div>
       <button type="submit"><strong>SIGN UP</strong></button>
-      <div class="container" style="background-color: #eee">
-        <label style="padding-left: 15px">
-        <input type="checkbox"  checked="checked" name="remember"> Remember me
-        </label>
-        <span class="psw"><a href="#">Forgot password?</a></span>
-      </div>
     </form>
     {% for message in messages %}
     <h5>{{message}}</h5>

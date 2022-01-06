@@ -2,29 +2,35 @@
 
 {% block content %}
 
-<style>  
+<style> 
+  .card {
+    width: 48%;
+  }
   .card:nth-child(even) {
     background-color: #dddddd;
   }
 </style>
 
-
+<center>
 <h1> Team page </h1> 
 
-<div class="row">
-  <div class="leftcolumn">
-    {% for user in users %}
-    <div class="card">
-      <a style="text-decoration: none; color: black;" href="/user/{{user.username}}">
-        <center>
-          <h3>{{user.email}}</h2>
-          <h5>{{user.first_name}} {{user.last_name}} </h5>
-        </centre>
-      </a>    
+<h5> Click a user below to see and edit access</h5>
+
+  <div class="row">
+    <div class="leftcolumn">
+      {% for user in users %}
+      <div class="card">
+        <a style="text-decoration: none; color: black;" href="/user/{{user.username}}">
+          <center>
+            <h3>{{user.email}}</h2>
+            <h5>{{user.first_name}} {{user.last_name}} </h5>
+          </centre>
+        </a>    
+      </div>
+      {% endfor %}
     </div>
-    {% endfor %}
   </div>
-</div>
+</centre>
 
 
 {% endblock content %}

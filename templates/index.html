@@ -13,6 +13,7 @@ body {
 }
 
 .header {
+  margin-top: 20px;
   padding: 2px;
   font-size: 40px;
   text-align: center;
@@ -46,13 +47,20 @@ body {
 </head>
 <body>
 
-<div class="header">
-  {% if user.is_authenticated %}
-  <h2>{{user.username}}</h2>
-  {% else %}
-  <h2>not logged in</h2>
-  {% endif %}
-</div>
+{% if user.is_authenticated %}
+  <div class="header">  
+    <h2>You are logged in as {{user.username}}</h2>
+  </div>
 
+  <div class="card">
+    <h3>This website records tools and application access.</h3>
+    <h4>As a team member you can see what access you have. You can request access by reaching out to the Scrum Master. If you know the access owner, reach out to them directly</h4>
+    {% if request.user.is_superuser %}
+      <h4>This application is setup to assist in offboarding/onboarding processes aswell as keeping track of what access team memebers have. As an admin user, you have visibility of all team member access. The Team page will have a list of all users.</h4>
+    {% endif %}
+  </div>
+
+{% else %}
+{% endif %}
 </body>
 {% endblock content %}
