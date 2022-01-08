@@ -25,3 +25,7 @@ DATABASES = {
     # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
     'default': env.db(),
 }
+
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
