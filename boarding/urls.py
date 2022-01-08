@@ -4,12 +4,13 @@ from . import views
 from boarding.views import (
     user_detail_view,
     remove_access,
+    index
 )
 
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('home', views.index, name='index'),
+    path('', view=index, name='index'),
+    path('home', view=index, name='index'),
     path('user/<str:username>', view=user_detail_view, name='user'),
     path('team', views.team, name='team'),
     path('register', views.register, name='register'),

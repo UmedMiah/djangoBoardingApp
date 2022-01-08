@@ -88,13 +88,18 @@
     </div>
     <div class="modal-body">
       <h5>
-        Do you really want to add record of this access? This process cannot be
-        undone.
+        Do you really want to add record of this access? 
       </h5>
     </div>
 
     <div class="modal-footer justify-content-center">
       <form method="POST">{% csrf_token %}
+        <input
+        type="button"
+        class="btn btn-secondary"
+        value="Cancel"
+        onclick="window.location='{% url 'user' username=username %}'"
+        />
         <input type="submit" class="btn btn-danger" value="Add">
     </form>
     </div>

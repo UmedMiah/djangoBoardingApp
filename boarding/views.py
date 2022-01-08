@@ -1,4 +1,5 @@
 from django.shortcuts import redirect, render
+from django.views.generic.base import TemplateView
 
 from .models import Products, UserAccess
 from django.contrib.auth.models import User, auth
@@ -75,8 +76,10 @@ class RemoveAccess(DeleteView):
 
 remove_access = RemoveAccess.as_view()
 
-def index(request):
-    return render(request, 'index.html')
+class Index(TemplateView):
+    template_name = "index.html"
+
+index = Index.as_view()
 
 def register(request):
     if request.method == 'POST':
@@ -130,22 +133,22 @@ def team(request):
     return render(request, 'team.html', {'users': users})
 
 def addaccess(request, userPK, productPK):
-    username= User.objects.filter(pk=userPK)
+    username= str(User.objects.filter(pk=userPK)[0])
 
     if not request.user.is_superuser:
         messages.info(request, 'Page does not exist')
     elif not User.objects.filter(pk = userPK).exists() or not Products.objects.filter(pk = productPK).exists():
         messages.info(request, 'User or product does not exist')
-        return redirect('user', {'username': username[0]})
+        return redirect('user', {'username': username})
     elif  UserAccess.objects.filter(product=productPK).filter(user=userPK).exists():
         messages.info(request, 'Access has already been granted')
-        return redirect('user', {'username': username[0]})
+        return redirect('user', {'username': username})
 
     if request.method == 'POST':
         useraccess = UserAccess.objects.create(user_id=userPK, product_id=productPK)
         useraccess.save()
         messages.info(request, 'User access added')
-        return redirect('user', username[0])
+        return redirect('user', username)
     else:
-        return render(request, 'add_access.html')
+        return render(request, 'add_access.html', {'username' : username})
         
