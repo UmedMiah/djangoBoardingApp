@@ -1,7 +1,7 @@
 asgiref==3.4.1
 attrs==21.4.0      
 Django==4.0        
-environ==1.0
+django-environ==0.8.1
 factory-boy==3.2.1
 Faker==11.3.0
 flake8==4.0.1
