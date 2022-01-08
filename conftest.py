@@ -1,11 +1,8 @@
 import pytest
 
-# from pytest_factoryboy import register
-from boarding.models import User
-from faker import Faker
 from pytest_factoryboy import register
 from boarding.tests.factories import UserFactory, ProductsFactory, AccessFactory
-from config import settings
+from config.settings import base
 
 register(UserFactory)
 register(ProductsFactory)
@@ -14,7 +11,7 @@ register(AccessFactory)
 
 @pytest.fixture(scope='session')
 def django_db_setup():
-    settings.DATABASES['default'] = {
+    base.DATABASES['default'] = {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': 'db.example.com',
         'NAME': 'external_db',

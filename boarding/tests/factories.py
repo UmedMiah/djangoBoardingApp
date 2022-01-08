@@ -1,7 +1,7 @@
+from django.contrib.auth.models import User
 import factory
 # from typing import Any, Sequence
 from faker import Faker
-from django.contrib.auth.models import User
 from boarding import models
 # from factory import Faker, post_generation
 # from factory.django import DjangoModelFactory
