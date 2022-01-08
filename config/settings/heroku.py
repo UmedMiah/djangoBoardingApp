@@ -5,7 +5,7 @@ Production Settings for Heroku
 import environ
 
 # If using in your own project, update the project namespace below
-from config.settings.base import *
+from config.settings.base import * # noqa
 
 env = environ.Env(
     # set casting, default value
