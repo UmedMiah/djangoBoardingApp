@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% load filterproduct %}
+{% load access_check %}
 
 {% block content %}
 <style>
@@ -22,19 +22,15 @@
   </style>
 
 <div class="container">
-  <div class="row">
-    <div class="col-sm-12">
-      <h2>{{ object.username }}</h2>
-    </div>
-  </div>
 
+  <center>
   {% if object == request.user or request.user.is_superuser %}
 
-  <!-- Action buttons -->
   {% if object.first_name and object.last_name %}
     <h1>{{ object.first_name }} {{object.last_name}}</h1>
   {% endif %}
-  <!-- End Action buttons -->
+
+  </centre>
 
     <table>
       {% for product in products %}

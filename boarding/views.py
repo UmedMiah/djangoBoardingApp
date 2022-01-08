@@ -1,119 +1,100 @@
 from django.shortcuts import redirect, render
+from django.views.generic.base import TemplateView
 
 from .models import Products, UserAccess
-from django.http import HttpResponse
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse, reverse_lazy
-from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView, RedirectView, UpdateView, DeleteView, FormView
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.urls import reverse_lazy
+from django.views.generic import DetailView, DeleteView
 
-User = get_user_model()
+User = get_user_model() # noqa
 
 
 class UserDetailView(UserPassesTestMixin, DetailView):
+
     model = User
     products = Products.objects.all()
     useraccess = UserAccess.objects.all()
     slug_field = "username"
-    slug_url_kwarg = "username" 
+    slug_url_kwarg = "username"
 
-    def get_context_data(self, **kwargs):          
-        context = super().get_context_data(**kwargs)                     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         products = self.products
-        useraccess = self.useraccess
 
-
-        # print(str(self.request.user.pk))
-
-        # print(User.objects.filter(username=self.kwargs['username']))
-
-
-        userkey= User.objects.filter(username=self.kwargs['username'])
-        
+        userkey = User.objects.filter(username=self.kwargs['username'])
         filteredAccess = UserAccess.objects.filter(user=userkey[0])
 
-        # useraccess.objects.filter(users = 
         context["products"] = products
         context["useraccess"] = filteredAccess
         return context
 
-    
     def test_func(self):
         if str(self.request.user) == str(self.kwargs['username']):
             return True
         else:
-            return self.request.user.is_superuser 
+            return self.request.user.is_superuser
 
 
 user_detail_view = UserDetailView.as_view()
 
-class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+# class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
-    model = User
-    fields = ["name"]
-    success_message = _("Information successfully updated")
+#     model = User
+#     fields = ["name"]
+#     success_message = _("Information successfully updated")
 
-    def get_success_url(self):
-        assert (
-            self.request.user.is_authenticated
-        )  # for mypy to know that the user is authenticated
-        return self.request.user.get_absolute_url()
+#     def get_success_url(self):
+#         assert (
+#             self.request.user.is_authenticated
+#         )  # for mypy to know that the user is authenticated
+#         return self.request.user.get_absolute_url()
 
-    def get_object(self):
-        return self.request.user
-
-
-user_update_view = UserUpdateView.as_view()
-
-class UserRedirectView(LoginRequiredMixin, RedirectView):
-
-    permanent = False
-
-    def get_redirect_url(self):
-        return reverse("users:detail", kwargs={"username": self.request.user.username})
+#     def get_object(self):
+#         return self.request.user
 
 
-user_redirect_view = UserRedirectView.as_view()
+# user_update_view = UserUpdateView.as_view()
 
-# class AddAccess(FormView):
-#     # model = UserAccess
-#     # fields = '__all__'
-#     # success_url = reverse_lazy('user')
-#     template_name = 'add_access.html'
-#     form_class = AddRecord
-#     success_url = reverse_lazy('team')
-#     # def get_initial(self):
-#     #     parent = Object.objects.get(id=self.kwargs['obj_id'])
-#     #     return { 'parent': parent, 'created_by': self.request.user }
-
-# add_access = AddAccess.as_view()
-
-class ClientUploadDelete(DeleteView):
+class RemoveAccess(DeleteView):
     model = UserAccess
-    success_url = reverse_lazy('team')
-    template_name = 'client_upload_delete.html'
 
-delete_client_upload = ClientUploadDelete.as_view()
+    def get_context_data(self, **kwargs):
+        context = super(RemoveAccess, self).get_context_data(**kwargs)
+        print(self.object.user)
+        context['target_id'] = self.object.user
+        return context
 
-# Create your views here.
-def index(request):
-    return render(request, 'index.html')
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('user', kwargs={'username': self.object.user})
+
+    template_name = 'remove_access.html'
+
+
+remove_access = RemoveAccess.as_view()
+
+
+class Index(TemplateView):
+    template_name = "index.html"
+
+
+index = Index.as_view()
+
 
 def register(request):
     if request.method == 'POST':
-        username = request.POST['uname']
+
+        username = request.POST['username']
         firstname = request.POST['firstname']
         surname = request.POST['surname']
-        email = request.POST['mail']
-        password = request.POST['psw']
-        rpassword = request.POST['rpsw']
+        email = request.POST['email']
+        password = request.POST['password']
+        repeatPassword = request.POST['repeatPassword']
 
-        if password == rpassword:
+        if password == repeatPassword:
             if User.objects.filter(email=email).exists():
                 messages.info(request, 'Email already used')
                 return redirect('register')
@@ -121,7 +102,12 @@ def register(request):
                 messages.info(request, 'Username already used')
                 return redirect('register')
             else:
-                user = User.objects.create_user(username=username,first_name=firstname ,last_name=surname ,email=email, password=password)
+                user = User.objects.create_user(
+                    username=username,
+                    first_name=firstname,
+                    last_name=surname,
+                    email=email,
+                    password=password)
                 user.save()
                 return redirect('login')
         else:
@@ -130,57 +116,50 @@ def register(request):
     else:
         return render(request, 'register.html')
 
+
 def login(request):
     if request.method == 'POST':
-        username = request.POST['uname']
-        password = request.POST['psw']
+
+        username = request.POST['username']
+        password = request.POST['password']
 
         user = auth.authenticate(username=username, password=password)
         if user is not None:
             auth.login(request, user)
             return redirect('/')
         else:
-            messages.info(request, 'Invalid login')
+            messages.info(request, 'Username and or password is invalid')
             return redirect('login')
-        
-    return render(request,'login.html')
+
+    return render(request, 'login.html')
+
 
 def logout(request):
     auth.logout(request)
     return redirect('/')
 
+
 def team(request):
     users = User.objects.all()
     return render(request, 'team.html', {'users': users})
-    # if request.method == 'POST':
-    #     username = request.POST['uname']
-    #     password = request.POST['psw']
 
-    #     user = auth.authenticate(username=username, password=password)
-    #     if user is not None:
-    #         auth.login(request, user)
-    #         return redirect('/')
-    #     else:
-    #         messages.info(request, 'Invalid login')
-    #         return redirect('login')
-        
-    # return render(request,'team.html')
 
 def addaccess(request, userPK, productPK):
+    username = str(User.objects.filter(pk=userPK)[0])
+
     if not request.user.is_superuser:
         messages.info(request, 'Page does not exist')
-    elif not User.objects.filter(pk = userPK).exists() or not Products.objects.filter(pk = productPK).exists():
+    elif not User.objects.filter(pk=userPK).exists() or not Products.objects.filter(pk=productPK).exists():
         messages.info(request, 'User or product does not exist')
-        return redirect('team')
-    elif  UserAccess.objects.filter(product=productPK).filter(user=userPK).exists():
+        return redirect('user', {'username': username})
+    elif UserAccess.objects.filter(product=productPK).filter(user=userPK).exists():
         messages.info(request, 'Access has already been granted')
-        return redirect('team')
+        return redirect('user', {'username': username})
 
     if request.method == 'POST':
         useraccess = UserAccess.objects.create(user_id=userPK, product_id=productPK)
         useraccess.save()
         messages.info(request, 'User access added')
-        return redirect('team')
+        return redirect('user', username)
     else:
-        return render(request, 'addaccess.html')
-        
+        return render(request, 'add_access.html', {'username': username})
