@@ -7,13 +7,9 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  ci-build-lint-test:
 
     runs-on: ubuntu-latest
-    # strategy:
-    #   max-parallel: 4
-    #   matrix:
-    #     python-version: [3.7, 3.8, 3.9]
 
     services:
       postgres:
