@@ -10,7 +10,6 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, DeleteView
 
-from django.conf import settings
 
 User = get_user_model() # noqa
 
@@ -43,23 +42,6 @@ class UserDetailView(UserPassesTestMixin, DetailView):
 
 user_detail_view = UserDetailView.as_view()
 
-# class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-
-#     model = User
-#     fields = ["name"]
-#     success_message = _("Information successfully updated")
-
-#     def get_success_url(self):
-#         assert (
-#             self.request.user.is_authenticated
-#         )  # for mypy to know that the user is authenticated
-#         return self.request.user.get_absolute_url()
-
-#     def get_object(self):
-#         return self.request.user
-
-
-# user_update_view = UserUpdateView.as_view()
 
 class RemoveAccess(DeleteView):
     model = UserAccess
@@ -81,12 +63,6 @@ remove_access = RemoveAccess.as_view()
 
 class Index(TemplateView):
     template_name = "index.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(Index, self).get_context_data(**kwargs)
-        print(settings.DEBUG)
-        context['debuggerd'] = settings.DEBUG
-        return context
 
 
 index = Index.as_view()
