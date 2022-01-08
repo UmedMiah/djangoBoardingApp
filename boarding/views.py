@@ -10,6 +10,8 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, DeleteView
 
+from django.conf import settings
+
 User = get_user_model() # noqa
 
 
@@ -79,6 +81,12 @@ remove_access = RemoveAccess.as_view()
 
 class Index(TemplateView):
     template_name = "index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(Index, self).get_context_data(**kwargs)
+        print(settings.DEBUG)
+        context['debuggerd'] = settings.DEBUG
+        return context
 
 
 index = Index.as_view()
