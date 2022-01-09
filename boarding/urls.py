@@ -1,13 +1,6 @@
 from django.urls import path
 from . import views
-
-from boarding.views import (
-    user_detail_view,
-    remove_access,
-    index
-)
-
-
+from boarding.views import user_detail_view, remove_access, index
 urlpatterns = [
     path('', view=index, name='index'),
     path('home', view=index, name='index'),
