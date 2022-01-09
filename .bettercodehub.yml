@@ -1,6 +1,7 @@
 component_depth: 1
 languages:
-- python
-  exclude:
-    - .*base\.py
-    - .*urls\.py
+- name: python
+  production:
+    exclude:
+      - .*base\.py
+      - .*urls\.py
