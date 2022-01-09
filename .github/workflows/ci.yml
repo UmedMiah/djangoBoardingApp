@@ -40,6 +40,10 @@ jobs:
     - name: Lint with flake8
       run: |
         flake8
+    - name: Postgres Migrate
+      run: |
+        python manage.py makemigrations
+        python manage.py migrate
     - name: Test with pytest
       run: |
         pytest -rP
