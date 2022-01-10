@@ -12,7 +12,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
-    username = 'John Doe'
+    username = fake.name()
     # email = fake.email()
     # # name = Faker("name")
 

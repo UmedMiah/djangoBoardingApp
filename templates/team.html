@@ -12,7 +12,8 @@
 </style>
 
 <center>
-<h1> Team page </h1> 
+{% if request.user.is_superuser %}
+<h1> Team page </h1>
 
 <h5> Click a user below to see and edit access</h5>
 
@@ -30,6 +31,7 @@
       {% endfor %}
     </div>
   </div>
+{% endif %}
 </centre>
 
 

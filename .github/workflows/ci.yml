@@ -13,7 +13,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:11
+        image: postgres:14
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -40,6 +40,10 @@ jobs:
     - name: Lint with flake8
       run: |
         flake8
+    - name: Postgres Migrate
+      run: |
+        python manage.py makemigrations
+        python manage.py migrate
     - name: Test with pytest
       run: |
         pytest -rP

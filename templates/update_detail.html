@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+  <br>
+  <br>
+  <br>
+  <head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+    <style>
+      body {
+      justify-content: center;
+      font-family: Roboto, Arial, sans-serif;
+      font-size: 15px;
+      }
+      form {
+        text-align: left;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      input[type=text] {
+      justify-content: center;
+      size: 100px;
+      padding: 16px 8px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      }
+      h1 {
+      text-align:center;
+      }
+      button:hover {
+      opacity: 0.8;
+      }
+      .formcontainer {
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 12px 500px 12px;
+      }
+      .textcontainer {
+      padding: 5px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Update email : {{request.user.email}}</h1>
+    <form method='POST'>
+      {% csrf_token %}
+      <div class="formcontainer">
+      <hr/>
+      <div class="textcontainer">
+        <label for="email"><strong>Email: </strong></label>
+        <input type="text" placeholder="Enter new email" name="email" required>
+        <input type="submit" value="Save"> 
+      </div>
+    </form>
+  </body>
+  {% endblock content %}
