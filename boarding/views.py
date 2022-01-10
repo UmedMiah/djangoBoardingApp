@@ -69,7 +69,7 @@ class Index(TemplateView):
 index = Index.as_view()
 
 
-class UserUpdateView(UpdateView):
+class UserUpdateView(UserPassesTestMixin, UpdateView):
     model = User
 
     template_name = "update_detail.html"
@@ -77,6 +77,12 @@ class UserUpdateView(UpdateView):
     fields = [
         "email",
     ]
+
+    def test_func(self):
+        if str(self.request.user.pk) == str(self.kwargs['pk']):
+            return True
+        else:
+            return self.request.user.is_superuser
 
     def form_valid(self, form):
         email = form.cleaned_data['email']
@@ -87,6 +93,8 @@ class UserUpdateView(UpdateView):
         elif not emailCheck == 'Pass':
             messages.info(self.request, emailCheck)
             return super(UserUpdateView, self).form_invalid(form)
+        else:
+            return super().form_valid(form)
 
     def form_invalid(self, form):
         messages.add_message(self.request, messages.INFO, 'Invalid Email')
