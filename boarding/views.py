@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, DeleteView
+from django.views.generic import DetailView, DeleteView, UpdateView
 
 
 User = get_user_model() # noqa
@@ -50,7 +50,6 @@ class RemoveAccess(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super(RemoveAccess, self).get_context_data(**kwargs)
-        print(self.object.user)
         context['target_id'] = self.object.user
         return context
 
@@ -68,6 +67,37 @@ class Index(TemplateView):
 
 
 index = Index.as_view()
+
+
+class UserUpdateView(UpdateView):
+    model = User
+
+    template_name = "update_detail.html"
+
+    fields = [
+        "email",
+    ]
+
+    def form_valid(self, form):
+        email = form.cleaned_data['email']
+        emailCheck = validate('email', email)
+        if User.objects.filter(email=email).exists():
+            messages.info(self.request, 'Email already used')
+            return super(UserUpdateView, self).form_invalid(form)
+        elif not emailCheck == 'Pass':
+            messages.info(self.request, emailCheck)
+            return super(UserUpdateView, self).form_invalid(form)
+
+    def form_invalid(self, form):
+        messages.add_message(self.request, messages.INFO, 'Invalid Email')
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_success_url(self, **kwargs):
+        messages.add_message(self.request, messages.INFO, 'Email updated')
+        return reverse_lazy('user', kwargs={'username': self.object.username})
+
+
+user_update_view = UserUpdateView.as_view()
 
 
 def register(request):

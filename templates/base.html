@@ -95,7 +95,7 @@
           </div>
         </div>
         {% if request.user.is_authenticated %}
-        <div class="nav-last"><a class="navbar-brand" href="{% url 'user' request.user.username %}">{{request.user.username}}</a></div>
+        <div class="nav-last"><a class="navbar-brand" href="{% url 'update' request.user.pk %}">{{request.user.username}}</a></div>
         {% endif %}
       </nav>
 
