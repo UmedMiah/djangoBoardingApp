@@ -24,7 +24,7 @@ def printAddRemove(product, useraccess):
     return "Delete" if checkAccess(product, useraccess) else "Add"
 
 
-# The below code creates the add/remove button on the admin teams page 
+# The below code creates the add/remove button on the admin teams page
 @register.simple_tag
 def addOrRemove(product, useraccess, user):
     useraccessobject = useraccess.filter(product=product.pk)
