@@ -5,6 +5,8 @@ passwordRegex = re.compile(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!
 emailRegex = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+")
 nameRegex = re.compile("^[a-zA-Z]{1,}$")
 
+# This function is used to validate format using Regex, returning string with an error or 'Pass'
+
 
 def validate(type, data):
 
