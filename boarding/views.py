@@ -1,3 +1,4 @@
+import bleach
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
 
@@ -14,6 +15,8 @@ from django.views.generic import DetailView, DeleteView, UpdateView
 
 
 User = get_user_model() # noqa
+
+# This serves the user status page, only if that user is logged in
 
 
 class UserDetailView(UserPassesTestMixin, DetailView):
@@ -33,9 +36,11 @@ class UserDetailView(UserPassesTestMixin, DetailView):
 
         context["products"] = products
         context["useraccess"] = filteredAccess
+        # This passes to the template, a filtered list of products the user has access to
         return context
 
     def test_func(self):
+        # This ensure only the user the page belongs to or Admin can view the status
         if str(self.request.user) == str(self.kwargs['username']):
             return True
         else:
@@ -45,6 +50,7 @@ class UserDetailView(UserPassesTestMixin, DetailView):
 user_detail_view = UserDetailView.as_view()
 
 
+# Code below is self documenting -> object ID is passed, and deleted
 class RemoveAccess(DeleteView):
     model = UserAccess
 
@@ -78,6 +84,7 @@ class UserUpdateView(UserPassesTestMixin, UpdateView):
         "email",
     ]
 
+    # This ensure only the user the page belongs to or Admin can edit the email
     def test_func(self):
         if str(self.request.user.pk) == str(self.kwargs['pk']):
             return True
@@ -85,6 +92,7 @@ class UserUpdateView(UserPassesTestMixin, UpdateView):
             return self.request.user.is_superuser
 
     def form_valid(self, form):
+        # Check for email duplicate and format using validate function.
         email = form.cleaned_data['email']
         emailCheck = validate('email', email)
         if User.objects.filter(email=email).exists():
@@ -109,6 +117,8 @@ user_update_view = UserUpdateView.as_view()
 
 
 def register(request):
+    # Each field is validated using the validate function
+    # If validate function fails, valid is set to false
     if request.method == 'POST':
 
         valid = True
@@ -160,7 +170,7 @@ def register(request):
                     username=username,
                     first_name=firstname,
                     last_name=surname,
-                    email=email,
+                    email=bleach.clean(email),
                     password=password)
             user.save()
             return redirect('login')
@@ -181,7 +191,7 @@ def login(request):
             return redirect('/')
         else:
             messages.info(request, 'Username and or password is invalid')
-            return redirect('login')
+            return render(request, 'login.html')
 
     return render(request, 'login.html')
 
@@ -192,26 +202,35 @@ def logout(request):
 
 
 def team(request):
-    users = User.objects.all()
-    return render(request, 'team.html', {'users': users})
+    if request.user.is_superuser:
+        users = User.objects.all()
+        return render(request, 'team.html', {'users': users})
+    else:
+        messages.info(request, 'Page does not exist')
+        redirect_response = render(request, 'index.html')
+        redirect_response.status_code = 302
+        return redirect_response
 
 
+# Below code ensures that only admins can add access.
+# Initally verifies that the user and product exist, and that there is no duplicates
 def addaccess(request, userPK, productPK):
-    username = str(User.objects.filter(pk=userPK)[0])
 
     if not request.user.is_superuser:
         messages.info(request, 'Page does not exist')
     elif not User.objects.filter(pk=userPK).exists() or not Products.objects.filter(pk=productPK).exists():
         messages.info(request, 'User or product does not exist')
-        return redirect('user', {'username': username})
+        return redirect('/')
     elif UserAccess.objects.filter(product=productPK).filter(user=userPK).exists():
         messages.info(request, 'Access has already been granted')
+        username = str(User.objects.filter(pk=userPK)[0])
         return redirect('user', {'username': username})
-
-    if request.method == 'POST':
+    elif request.method == 'POST':
+        username = str(User.objects.filter(pk=userPK)[0])
         useraccess = UserAccess.objects.create(user_id=userPK, product_id=productPK)
         useraccess.save()
         messages.info(request, 'User access added')
         return redirect('user', username)
     else:
+        username = str(User.objects.filter(pk=userPK)[0])
         return render(request, 'add_access.html', {'username': username})
